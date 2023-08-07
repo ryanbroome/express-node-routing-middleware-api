@@ -1,5 +1,3 @@
-// TODO update tests from cat to test items express application
-
 process.env.NODE_ENV = "test";
 const request = require("supertest");
 const app = require("../app");
