@@ -2,73 +2,73 @@
 
 process.env.NODE_ENV = "test";
 const request = require("supertest");
-
 const app = require("../app");
-let cats = require("../fakeDb");
+let items = require("../fakeDb");
 
-let pickles = { name: "Pickles" };
+let wash = { name: "Wash", price: 1.99 };
 
 beforeEach(function () {
-  cats.push(pickles);
+  items.push(wash);
 });
 
 afterEach(function () {
   // make sure this *mutates*, not redefines, `cats`
-  cats.length = 0;
+  items.length = 0;
 });
 
-describe("GET /cats", () => {
-  test("Get all cats", async () => {
-    const res = await request(app).get("/cats");
+describe("GET /items", () => {
+  test("Get all items", async () => {
+    const res = await request(app).get("/items");
     expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual({ cats: [pickles] });
+    expect(res.body).toEqual({ items: [wash] });
   });
 });
 
-describe("GET /cats/:name", () => {
-  test("Get cat by name", async () => {
-    const res = await request(app).get(`/cats/${pickles.name}`);
+describe("GET /items/:name", () => {
+  test("Get item by name", async () => {
+    const res = await request(app).get(`/items/${wash.name}`);
     expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual({ cat: pickles });
+    expect(res.body).toEqual({ item: wash });
   });
-  test("Responds with 404 for invalid cat", async () => {
-    const res = await request(app).get(`/cats/icecube`);
+  test("Responds with 404 for invalid item", async () => {
+    const res = await request(app).get(`/items/icecube`);
     expect(res.statusCode).toBe(404);
   });
 });
 
-describe("POST /cats", () => {
-  test("Creating a cat", async () => {
-    const res = await request(app).post("/cats").send({ name: "Blue" });
+describe("POST /items", () => {
+  test("Creating a item", async () => {
+    const newItem = { name: "wash", price: 1.99 };
+    const res = await request(app).post("/items").send(newItem);
     expect(res.statusCode).toBe(201);
-    expect(res.body).toEqual({ cat: { name: "Blue" } });
+    expect(res.body).toEqual({ item: newItem });
   });
   test("Responds with 400 if name is missing", async () => {
-    const res = await request(app).post("/cats").send({});
+    const res = await request(app).post("/items").send({ name: null, price: "1.99" });
     expect(res.statusCode).toBe(400);
   });
 });
 
-describe("/PATCH /cats/:name", () => {
-  test("Updating a cat's name", async () => {
-    const res = await request(app).patch(`/cats/${pickles.name}`).send({ name: "Monster" });
+describe("/PATCH /items/:name", () => {
+  test("Updating an item's name", async () => {
+    const res = await request(app).patch(`/items/${wash.name}`).send({ name: "monster", price: 1.99 });
     expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual({ cat: { name: "Monster" } });
+    expect(res.body).toEqual({ item: { name: "monster", price: 1.99 } });
   });
   test("Responds with 404 for invalid name", async () => {
-    const res = await request(app).patch(`/cats/Piggles`).send({ name: "Monster" });
+    const res = await request(app).patch(`/items/piggles`).send({ name: "Monster", price: 1.99 });
     expect(res.statusCode).toBe(404);
   });
 });
 
-describe("/DELETE /cats/:name", () => {
-  test("Deleting a cat", async () => {
-    const res = await request(app).delete(`/cats/${pickles.name}`);
+describe("/DELETE /items/:name", () => {
+  test("Deleting an item", async () => {
+    const res = await request(app).delete(`/items/${wash.name}`);
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual({ message: "Deleted" });
   });
-  test("Responds with 404 for deleting invalid cat", async () => {
-    const res = await request(app).delete(`/cats/hamface`);
+  test("Responds with 404 for deleting invalid item", async () => {
+    const res = await request(app).delete(`/items/turkeybravo`);
     expect(res.statusCode).toBe(404);
   });
 });

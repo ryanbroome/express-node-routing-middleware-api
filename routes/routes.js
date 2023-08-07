@@ -14,9 +14,7 @@ router.post("/", function (req, res, next) {
   try {
     if (!req.body.name) throw new ExpressError("Name is required", 400);
     const newItem = { name: req.body.name.toLowerCase(), price: +req.body.price };
-    console.log("before, newItem", items);
     items.push(newItem);
-    console.log("before, newItem", items);
     return res.status(201).json({ item: newItem });
   } catch (e) {
     return next(e);
