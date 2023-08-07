@@ -3,7 +3,7 @@ const request = require("supertest");
 const app = require("../app");
 let items = require("../fakeDb");
 
-let wash = { name: "Wash", price: 1.99 };
+let wash = { name: "wash", price: 1.99 };
 
 beforeEach(function () {
   items.push(wash);
