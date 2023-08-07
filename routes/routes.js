@@ -43,11 +43,11 @@ router.patch("/:name", function (req, res) {
 });
 
 router.delete("/:name", function (req, res) {
-  const foundCat = items.findIndex((cat) => cat.name === req.params.name);
-  if (foundCat === -1) {
-    throw new ExpressError("Cat not found", 404);
+  const foundItem = items.findIndex((item) => item.name === req.params.name.toLowerCase());
+  if (foundItem === -1) {
+    throw new ExpressError("Item not found", 404);
   }
-  items.splice(foundCat, 1);
+  items.splice(foundItem, 1);
   res.json({ message: "Deleted" });
 });
 
