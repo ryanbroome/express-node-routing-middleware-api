@@ -1,4 +1,4 @@
-// TODO update this and correct to be my API
+// RESTFUL routes API using Express Route
 
 const express = require("express");
 const router = new express.Router();
