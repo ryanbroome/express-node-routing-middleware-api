@@ -3,46 +3,51 @@
 const express = require("express");
 const router = new express.Router();
 const ExpressError = require("../expressError");
-const cats = require("../fakeDb");
+const items = require("../fakeDb");
 
+// render a list of shopping items
 router.get("/", function (req, res) {
-  res.json({ cats });
+  return res.json({ items });
 });
 
 router.post("/", function (req, res, next) {
   try {
     if (!req.body.name) throw new ExpressError("Name is required", 400);
-    const newCat = { name: req.body.name };
-    cats.push(newCat);
-    return res.status(201).json({ cat: newCat });
+    const newItem = { name: req.body.name.toLowerCase(), price: +req.body.price };
+    console.log("before, newItem", items);
+    items.push(newItem);
+    console.log("before, newItem", items);
+    return res.status(201).json({ item: newItem });
   } catch (e) {
     return next(e);
   }
 });
 
 router.get("/:name", function (req, res) {
-  const foundCat = cats.find((cat) => cat.name === req.params.name);
-  if (foundCat === undefined) {
-    throw new ExpressError("Cat not found", 404);
+  const foundItem = items.find((item) => item.name === req.params.name);
+  if (foundItem === undefined) {
+    throw new ExpressError("Item not found", 404);
   }
-  res.json({ cat: foundCat });
+  res.json({ item: foundItem });
 });
 
 router.patch("/:name", function (req, res) {
-  const foundCat = cats.find((cat) => cat.name === req.params.name);
-  if (foundCat === undefined) {
-    throw new ExpressError("Cat not found", 404);
+  const foundItem = items.find((item) => item.name === req.params.name);
+  if (foundItem === undefined) {
+    throw new ExpressError("Item not found", 404);
   }
-  foundCat.name = req.body.name;
-  res.json({ cat: foundCat });
+  // error handling with this? what if no price update? what if no name update?
+  foundItem.name = req.body.name.toLowerCase();
+  foundItem.price = +req.body.price;
+  res.json({ item: foundItem });
 });
 
 router.delete("/:name", function (req, res) {
-  const foundCat = cats.findIndex((cat) => cat.name === req.params.name);
+  const foundCat = items.findIndex((cat) => cat.name === req.params.name);
   if (foundCat === -1) {
     throw new ExpressError("Cat not found", 404);
   }
-  cats.splice(foundCat, 1);
+  items.splice(foundCat, 1);
   res.json({ message: "Deleted" });
 });
 
